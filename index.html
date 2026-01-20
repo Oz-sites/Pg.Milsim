@@ -28,29 +28,31 @@ body{
   pointer-events:none;
 }
 
-/* לוגו */
-.logo-wrapper{margin-top:40px; z-index:10;}
+/* לוגו GIF מרובע עם פינות מעוגלות */
+.logo-wrapper{margin-top:40px;z-index:10}
 .logo{
-  width:140px;
-  height:140px;
-  border-radius:20px;
+  width:140px;height:140px;
+  border-radius:20px; /* פינות מעוגלות */
   border:4px solid red;
-  cursor:pointer;
-  animation:spin 20s linear infinite; /* האטת סיבוב */
-  transition: transform 0.3s, box-shadow 0.3s;
+  background:url("PGLOGOGIF.gif") center/cover no-repeat;
   box-shadow:0 0 40px rgba(255,0,0,.7);
+  cursor:pointer;
+  animation:spinLogo 20s linear infinite; /* סיבוב איטי */
+  transition: transform 0.3s, box-shadow 0.3s;
 }
-.logo:hover{ transform: scale(1.2); box-shadow:0 0 55px red; }
-.logo.clickAnimate{ transform: scale(1.25); box-shadow:0 0 65px red; }
-
-@keyframes spin{
+.logo:hover,
+.logo:active{
+  transform:scale(1.2);
+  box-shadow:0 0 55px red;
+}
+@keyframes spinLogo{
   0%{transform:rotate(0deg);}
   100%{transform:rotate(360deg);}
 }
 
-header{text-align:center; max-width:800px; z-index:10; padding:20px;}
-header h1{font-size:44px; margin:20px 0; text-shadow:0 0 15px red;}
-header p{color:#ffb3b3; font-size:18px; text-shadow:0 0 8px rgba(255,0,0,.5);}
+header{text-align:center;max-width:800px;z-index:10;padding:20px}
+header h1{font-size:44px;margin:20px 0;text-shadow:0 0 15px red;}
+header p{color:#ffb3b3;font-size:18px;text-shadow:0 0 8px rgba(255,0,0,.5);}
 
 .separator{
   width:120px;height:3px;background:red;
@@ -64,7 +66,7 @@ header p{color:#ffb3b3; font-size:18px; text-shadow:0 0 8px rgba(255,0,0,.5);}
 
 .card{
   width:280px;
-  background:rgba(255,0,0,0.25);
+  background:rgba(255,0,0,0.25); /* פחות שקוף */
   border:1px solid rgba(255,0,0,.5);
   border-radius:18px;
   padding:30px;
@@ -72,7 +74,10 @@ header p{color:#ffb3b3; font-size:18px; text-shadow:0 0 8px rgba(255,0,0,.5);}
   cursor:pointer;
   transition:.3s, box-shadow .3s;
 }
-.card:hover{transform:scale(1.05); box-shadow:0 0 55px red;}
+.card:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 55px red;
+}
 .card h3{color:red;margin-bottom:12px}
 .card p{color:#ffd6d6;line-height:1.7}
 
@@ -120,10 +125,7 @@ header p{color:#ffb3b3; font-size:18px; text-shadow:0 0 8px rgba(255,0,0,.5);}
   box-shadow:0 0 30px red;
 }
 
-/* קישורים חיצוניים בסגנון טבלה */
-.external-section{
-  margin-top:60px; /* רווח גדול יותר מהזכיות */
-}
+/* קישורים צד לצד */
 .external-section h2{
   color:red;
   font-size:36px;
@@ -134,18 +136,16 @@ header p{color:#ffb3b3; font-size:18px; text-shadow:0 0 8px rgba(255,0,0,.5);}
 
 .links-container{
   display:flex;
-  flex-direction:column; /* כל קישור בשורה */
-  align-items:center;
-  gap:25px; /* רווח בין הכפתורים */
-  max-width:400px;
-  margin:auto;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:20px;
+  max-width:600px;
+  margin:auto 0 60px 0;
 }
 
 .btn{
   display:block;
-  width:100%;
-  max-width:300px;
-  padding:16px 0;
+  padding:16px 24px;
   font-size:18px;
   font-weight:bold;
   color:white;
@@ -163,17 +163,21 @@ header p{color:#ffb3b3; font-size:18px; text-shadow:0 0 8px rgba(255,0,0,.5);}
   filter:brightness(1.2);
 }
 
-.btn-discord{ font-size:20px; max-width:320px; }
+.btn-discord{
+  font-size:20px;
+  padding:18px 30px;
+}
 
+/* Footer */
 footer{
-  padding:30px;
+  padding:40px 20px;
   background:#050000;
   color:#ff8c8c;
   width:100%;
   text-align:center;
   z-index:10;
+  line-height:2;
 }
-footer span{ display:block; margin-top:10px; font-size:14px; color:#ffb3b3; }
 </style>
 </head>
 
@@ -181,11 +185,7 @@ footer span{ display:block; margin-top:10px; font-size:14px; color:#ffb3b3; }
 <canvas id="effectCanvas"></canvas>
 
 <div class="logo-wrapper">
-  <img
-    class="logo"
-    src="assets/PGLOGOGIF.gif"
-    alt="PG Logo"
-    onclick="this.classList.add('clickAnimate'); setTimeout(()=>this.classList.remove('clickAnimate'),300)">
+  <div class="logo"></div>
 </div>
 
 <header>
@@ -277,8 +277,8 @@ footer span{ display:block; margin-top:10px; font-size:14px; color:#ffb3b3; }
 </section>
 
 <footer>
-© Pg - Perfect Gaming | Milsim | PUBLIC
-<span>נבנה על ידי Yossi Shalom / Oz</span>
+© Pg - Perfect Gaming | Milsim | PUBLIC<br>
+נבנה על ידי Yossi Shalom / Oz
 </footer>
 
 <script>
@@ -327,5 +327,6 @@ function draw(){
 }
 draw();
 </script>
+
 </body>
 </html>
