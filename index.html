@@ -33,7 +33,7 @@ body{
   justify-content:center;
 }
 
-/* מסגרת זוהרת + סיבוב */
+/* מסגרת זוהרת ללוגו */
 .intro-logo-wrapper {
   width:180px;
   height:180px;
@@ -47,14 +47,14 @@ body{
   animation:spinWrapper 6s linear infinite, glowLogo 2s ease-in-out infinite alternate;
 }
 
-@keyframes spinWrapper {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 @keyframes glowLogo {
   0% { box-shadow:0 0 50px red, 0 0 80px rgba(255,0,0,0.5); }
   100% { box-shadow:0 0 70px #ff6666, 0 0 100px rgba(255,0,0,0.7); }
+}
+
+@keyframes spinWrapper {
+  0% { transform:rotate(0deg); }
+  100% { transform:rotate(360deg); }
 }
 
 #intro .intro-logo{
@@ -62,8 +62,6 @@ body{
   height:160px;
   border-radius:24px;
   background:url("PGLOGOGIF.gif") center/cover no-repeat;
-  box-shadow:0 0 60px red;
-  /* הלוגו עצמו לא מסתובב – מסתובבת המסגרת */
 }
 
 #intro h1{
@@ -105,6 +103,10 @@ body{
 }
 
 /* אנימציות */
+@keyframes spinIntro{
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
+}
 @keyframes pulseText{
   0%,100%{text-shadow:0 0 20px red, 0 0 40px white;}
   50%{text-shadow:0 0 35px red, 0 0 60px white;}
@@ -119,15 +121,28 @@ body{
 }
 
 /* ====== LOGO ====== */
-.logo-wrapper{margin-top:40px;z-index:10}
+.logo-wrapper{
+  margin-top:40px;
+  z-index:10;
+}
+.logo-wrapper .intro-logo-wrapper { /* מוסיפים wrapper גם ללוגו הראשי */
+  width:180px;
+  height:180px;
+  border-radius:30px;
+  padding:10px;
+  background:rgba(255,0,0,0.3);
+  box-shadow:0 0 50px red, 0 0 80px rgba(255,0,0,0.5);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  animation:spinWrapper 6s linear infinite, glowLogo 2s ease-in-out infinite alternate;
+}
 .logo{
-  width:140px;height:140px;
-  border-radius:20px;
-  border:4px solid red;
+  width:160px;
+  height:160px;
+  border-radius:24px;
   background:url("PGLOGOGIF.gif") center/cover no-repeat;
-  box-shadow:0 0 40px rgba(255,0,0,.7);
   cursor:pointer;
-  animation:spinLogo 20s linear infinite;
   transition: transform 0.3s, box-shadow 0.3s;
 }
 .logo:hover,
@@ -135,157 +150,36 @@ body{
   transform:scale(1.2);
   box-shadow:0 0 55px red;
 }
-@keyframes spinLogo{
-  0%{transform:rotate(0deg);}
-  100%{transform:rotate(360deg);}
-}
 
-/* שאר האתר נשאר כפי שהיה */
+/* שאר הסגנונות נשארים כפי שהיו */
 header{text-align:center;max-width:800px;z-index:10;padding:20px}
 header h1{font-size:44px;margin:20px 0;text-shadow:0 0 15px red;}
 header p{color:#ffb3b3;font-size:18px;text-shadow:0 0 8px rgba(255,0,0,.5);}
-
-.separator{
-  width:120px;height:3px;background:red;
-  margin:60px 0;border-radius:10px;z-index:10;
-}
-
-/* כרטיסיות */
+.separator{width:120px;height:3px;background:red;margin:60px 0;border-radius:10px;z-index:10;}
 .section{padding:60px 20px;text-align:center;max-width:1100px;z-index:10}
 .section h2{color:red;font-size:34px;margin-bottom:40px;text-shadow:0 0 10px red;}
 .cards{display:flex;justify-content:center;gap:30px;flex-wrap:wrap}
-
-.card{
-  width:280px;
-  background:rgba(255,0,0,0.25);
-  border:1px solid rgba(255,0,0,.5);
-  border-radius:18px;
-  padding:30px;
-  box-shadow:0 0 25px rgba(255,0,0,.35);
-  cursor:pointer;
-  transition:.3s, box-shadow .3s;
-}
-.card:hover{
-  transform:scale(1.05);
-  box-shadow:0 0 55px red;
-}
+.card{width:280px;background:rgba(255,0,0,0.25);border:1px solid rgba(255,0,0,.5);border-radius:18px;padding:30px;box-shadow:0 0 25px rgba(255,0,0,.35);cursor:pointer;transition:.3s, box-shadow .3s;}
+.card:hover{transform:scale(1.05);box-shadow:0 0 55px red;}
 .card h3{color:red;margin-bottom:12px}
 .card p{color:#ffd6d6;line-height:1.7}
-
 .training{border-color:#ff7b7b}
 .combat{border-color:red}
-
-/* VS */
-.vs-container{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:30px;
-  flex-wrap:wrap;
-}
-.vs{
-  font-size:56px;
-  font-weight:800;
-  color:white;
-  text-shadow:0 0 20px red;
-  animation:vsPulse 2s infinite;
-  cursor:pointer;
-}
-@keyframes vsPulse{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.15)}
-  100%{transform:scale(1)}
-}
-
-/* לוח זמנים */
-.schedule-list{
-  list-style:none;
-  max-width:420px;
-  margin:auto;
-  position:relative;
-}
-.schedule-list li{
-  padding:15px;
-  margin-bottom:10px;
-  border-radius:12px;
-  font-weight:bold;
-  position:relative;
-}
+.vs-container{display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap;}
+.vs{font-size:56px;font-weight:800;color:white;text-shadow:0 0 20px red;animation:vsPulse 2s infinite;cursor:pointer;}
+@keyframes vsPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+.schedule-list{list-style:none;max-width:420px;margin:auto;position:relative;}
+.schedule-list li{padding:15px;margin-bottom:10px;border-radius:12px;font-weight:bold;position:relative;}
 .schedule-list .training{background:rgba(255,120,120,.15);border:1px solid #ff7b7b}
 .schedule-list .combat{background:rgba(255,0,0,.2);border:1px solid red}
-.schedule-list .night{
-  background:linear-gradient(45deg,darkred,red);
-  box-shadow:0 0 30px red;
-}
-
-/* טיימר */
-#timer{
-  position:relative; /* בתוך הלוח */
-  top:0;
-  left:0;
-  transform:none;
-  margin-bottom:20px;
-  font-size:24px;
-  font-weight:bold;
-  color:white;
-  text-shadow:0 0 15px red;
-  z-index:10;
-  text-align:center;
-}
-
-/* קישורים צד לצד */
-.external-section h2{
-  color:red;
-  font-size:36px;
-  margin-bottom:30px;
-  text-shadow:0 0 15px rgba(255,0,0,.7);
-  text-align:center;
-}
-
-.links-container{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:20px;
-  max-width:600px;
-  margin:auto 0 60px 0;
-}
-
-.btn{
-  display:block;
-  padding:16px 24px;
-  font-size:18px;
-  font-weight:bold;
-  color:white;
-  background:linear-gradient(45deg,darkred,red);
-  border-radius:30px;
-  text-decoration:none;
-  text-align:center;
-  box-shadow:0 0 25px red;
-  transition:transform .3s, box-shadow .3s, filter .3s;
-}
-
-.btn:hover{
-  transform:scale(1.05) translateY(-2px);
-  box-shadow:0 0 55px red;
-  filter:brightness(1.2);
-}
-
-.btn-discord{
-  font-size:20px;
-  padding:18px 30px;
-}
-
-/* Footer */
-footer{
-  padding:40px 20px;
-  background:#050000;
-  color:#ff8c8c;
-  width:100%;
-  text-align:center;
-  z-index:10;
-  line-height:2;
-}
+.schedule-list .night{background:linear-gradient(45deg,darkred,red);box-shadow:0 0 30px red;}
+#timer{position:relative;top:0;left:0;transform:none;margin-bottom:20px;font-size:24px;font-weight:bold;color:white;text-shadow:0 0 15px red;z-index:10;text-align:center;}
+.external-section h2{color:red;font-size:36px;margin-bottom:30px;text-shadow:0 0 15px rgba(255,0,0,.7);text-align:center;}
+.links-container{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;max-width:600px;margin:auto 0 60px 0;}
+.btn{display:block;padding:16px 24px;font-size:18px;font-weight:bold;color:white;background:linear-gradient(45deg,darkred,red);border-radius:30px;text-decoration:none;text-align:center;box-shadow:0 0 25px red;transition:transform .3s, box-shadow .3s, filter .3s;}
+.btn:hover{transform:scale(1.05) translateY(-2px);box-shadow:0 0 55px red;filter:brightness(1.2);}
+.btn-discord{font-size:20px;padding:18px 30px;}
+footer{padding:40px 20px;background:#050000;color:#ff8c8c;width:100%;text-align:center;z-index:10;line-height:2;}
 </style>
 </head>
 
@@ -306,7 +200,9 @@ footer{
 </div>
 
 <div class="logo-wrapper">
-  <div class="logo"></div>
+  <div class="intro-logo-wrapper">
+    <div class="logo"></div>
+  </div>
 </div>
 
 <header>
