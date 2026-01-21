@@ -33,7 +33,7 @@ body{
   justify-content:center;
 }
 
-/* מסגרת זוהרת ללוגו */
+/* מסגרת מסתובבת ללוגו במסך טעינה */
 .intro-logo-wrapper {
   width:180px;
   height:180px;
@@ -44,17 +44,7 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  animation:spinWrapper 6s linear infinite, glowLogo 2s ease-in-out infinite alternate;
-}
-
-@keyframes glowLogo {
-  0% { box-shadow:0 0 50px red, 0 0 80px rgba(255,0,0,0.5); }
-  100% { box-shadow:0 0 70px #ff6666, 0 0 100px rgba(255,0,0,0.7); }
-}
-
-@keyframes spinWrapper {
-  0% { transform:rotate(0deg); }
-  100% { transform:rotate(360deg); }
+  animation:spinLogo 6s linear infinite;
 }
 
 #intro .intro-logo{
@@ -62,6 +52,7 @@ body{
   height:160px;
   border-radius:24px;
   background:url("PGLOGOGIF.gif") center/cover no-repeat;
+  box-shadow:0 0 60px red;
 }
 
 #intro h1{
@@ -103,10 +94,6 @@ body{
 }
 
 /* אנימציות */
-@keyframes spinIntro{
-  from{transform:rotate(0deg);}
-  to{transform:rotate(360deg);}
-}
 @keyframes pulseText{
   0%,100%{text-shadow:0 0 20px red, 0 0 40px white;}
   50%{text-shadow:0 0 35px red, 0 0 60px white;}
@@ -120,29 +107,16 @@ body{
   pointer-events:none;
 }
 
-/* ====== LOGO ====== */
-.logo-wrapper{
-  margin-top:40px;
-  z-index:10;
-}
-.logo-wrapper .intro-logo-wrapper { /* מוסיפים wrapper גם ללוגו הראשי */
-  width:180px;
-  height:180px;
-  border-radius:30px;
-  padding:10px;
-  background:rgba(255,0,0,0.3);
-  box-shadow:0 0 50px red, 0 0 80px rgba(255,0,0,0.5);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  animation:spinWrapper 6s linear infinite, glowLogo 2s ease-in-out infinite alternate;
-}
+/* ====== LOGO באתר ====== */
+.logo-wrapper{margin-top:40px;z-index:10;display:flex;flex-direction:column;align-items:center;}
 .logo{
-  width:160px;
-  height:160px;
-  border-radius:24px;
+  width:140px;height:140px;
+  border-radius:20px;
+  border:4px solid red;
   background:url("PGLOGOGIF.gif") center/cover no-repeat;
+  box-shadow:0 0 40px rgba(255,0,0,.7);
   cursor:pointer;
+  animation:spinLogo 20s linear infinite;
   transition: transform 0.3s, box-shadow 0.3s;
 }
 .logo:hover,
@@ -150,36 +124,144 @@ body{
   transform:scale(1.2);
   box-shadow:0 0 55px red;
 }
+/* מסגרת סביב הלוגו באתר */
+.logo-wrapper .logo-frame {
+  width:160px;
+  height:160px;
+  border-radius:25px;
+  padding:10px;
+  background:rgba(255,0,0,0.3);
+  box-shadow:0 0 50px red,0 0 80px rgba(255,0,0,0.5);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  animation:spinLogo 20s linear infinite;
+}
 
-/* שאר הסגנונות נשארים כפי שהיו */
+@keyframes spinLogo{
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
+}
+
 header{text-align:center;max-width:800px;z-index:10;padding:20px}
 header h1{font-size:44px;margin:20px 0;text-shadow:0 0 15px red;}
 header p{color:#ffb3b3;font-size:18px;text-shadow:0 0 8px rgba(255,0,0,.5);}
-.separator{width:120px;height:3px;background:red;margin:60px 0;border-radius:10px;z-index:10;}
+
+.separator{
+  width:120px;height:3px;background:red;
+  margin:60px 0;border-radius:10px;z-index:10;
+}
+
+/* כרטיסיות */
 .section{padding:60px 20px;text-align:center;max-width:1100px;z-index:10}
 .section h2{color:red;font-size:34px;margin-bottom:40px;text-shadow:0 0 10px red;}
 .cards{display:flex;justify-content:center;gap:30px;flex-wrap:wrap}
-.card{width:280px;background:rgba(255,0,0,0.25);border:1px solid rgba(255,0,0,.5);border-radius:18px;padding:30px;box-shadow:0 0 25px rgba(255,0,0,.35);cursor:pointer;transition:.3s, box-shadow .3s;}
-.card:hover{transform:scale(1.05);box-shadow:0 0 55px red;}
+
+.card{
+  width:280px;
+  background:rgba(255,0,0,0.25);
+  border:1px solid rgba(255,0,0,.5);
+  border-radius:18px;
+  padding:30px;
+  box-shadow:0 0 25px rgba(255,0,0,.35);
+  cursor:pointer;
+  transition:.3s, box-shadow .3s;
+}
+.card:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 55px red;
+}
 .card h3{color:red;margin-bottom:12px}
 .card p{color:#ffd6d6;line-height:1.7}
+
 .training{border-color:#ff7b7b}
 .combat{border-color:red}
-.vs-container{display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap;}
-.vs{font-size:56px;font-weight:800;color:white;text-shadow:0 0 20px red;animation:vsPulse 2s infinite;cursor:pointer;}
-@keyframes vsPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
-.schedule-list{list-style:none;max-width:420px;margin:auto;position:relative;}
-.schedule-list li{padding:15px;margin-bottom:10px;border-radius:12px;font-weight:bold;position:relative;}
+
+/* VS */
+.vs-container{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:30px;
+  flex-wrap:wrap;
+}
+.vs{
+  font-size:56px;
+  font-weight:800;
+  color:white;
+  text-shadow:0 0 20px red;
+  animation:vsPulse 2s infinite;
+  cursor:pointer;
+}
+@keyframes vsPulse{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.15)}
+  100%{transform:scale(1)}
+}
+
+/* לוח זמנים */
+.schedule-list{
+  list-style:none;
+  max-width:420px;
+  margin:auto;
+  position:relative;
+}
+.schedule-list li{
+  padding:15px;
+  margin-bottom:10px;
+  border-radius:12px;
+  font-weight:bold;
+  position:relative;
+}
 .schedule-list .training{background:rgba(255,120,120,.15);border:1px solid #ff7b7b}
 .schedule-list .combat{background:rgba(255,0,0,.2);border:1px solid red}
-.schedule-list .night{background:linear-gradient(45deg,darkred,red);box-shadow:0 0 30px red;}
-#timer{position:relative;top:0;left:0;transform:none;margin-bottom:20px;font-size:24px;font-weight:bold;color:white;text-shadow:0 0 15px red;z-index:10;text-align:center;}
-.external-section h2{color:red;font-size:36px;margin-bottom:30px;text-shadow:0 0 15px rgba(255,0,0,.7);text-align:center;}
-.links-container{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;max-width:600px;margin:auto 0 60px 0;}
-.btn{display:block;padding:16px 24px;font-size:18px;font-weight:bold;color:white;background:linear-gradient(45deg,darkred,red);border-radius:30px;text-decoration:none;text-align:center;box-shadow:0 0 25px red;transition:transform .3s, box-shadow .3s, filter .3s;}
-.btn:hover{transform:scale(1.05) translateY(-2px);box-shadow:0 0 55px red;filter:brightness(1.2);}
-.btn-discord{font-size:20px;padding:18px 30px;}
-footer{padding:40px 20px;background:#050000;color:#ff8c8c;width:100%;text-align:center;z-index:10;line-height:2;}
+.schedule-list .night{
+  background:linear-gradient(45deg,darkred,red);
+  box-shadow:0 0 30px red;
+}
+
+/* טיימר */
+#timer{
+  position:relative;
+  margin-bottom:20px;
+  font-size:24px;
+  font-weight:bold;
+  color:white;
+  text-shadow:0 0 15px red;
+  z-index:10;
+  text-align:center;
+}
+
+/* כפתור מעבר לשרת */
+#serverButton{
+  margin-top:20px;
+  padding:12px 24px;
+  font-size:18px;
+  font-weight:bold;
+  color:white;
+  background:linear-gradient(45deg,darkred,red);
+  border-radius:30px;
+  text-decoration:none;
+  text-align:center;
+  box-shadow:0 0 25px red;
+  transition: transform .3s, box-shadow .3s, filter .3s;
+}
+#serverButton:hover{
+  transform:scale(1.05) translateY(-2px);
+  box-shadow:0 0 55px red;
+  filter:brightness(1.2);
+}
+
+/* Footer */
+footer{
+  padding:40px 20px;
+  background:#050000;
+  color:#ff8c8c;
+  width:100%;
+  text-align:center;
+  z-index:10;
+  line-height:2;
+}
 </style>
 </head>
 
@@ -200,9 +282,10 @@ footer{padding:40px 20px;background:#050000;color:#ff8c8c;width:100%;text-align:
 </div>
 
 <div class="logo-wrapper">
-  <div class="intro-logo-wrapper">
+  <div class="logo-frame">
     <div class="logo"></div>
   </div>
+  <a href="https://cfx.re/join/9p77qb" target="_blank" id="serverButton">מעבר לשרת</a>
 </div>
 
 <header>
@@ -355,51 +438,53 @@ function draw(){
 draw();
 
 // ===== PROGRESS BAR עם אחוזים 3 שניות =====
-let progress=0;
-const progressBar=document.getElementById("progress");
-const progressPercent=document.getElementById("progressPercent");
-const totalDuration=3000;
-const steps=100;
-const intervalTime=totalDuration/steps;
+document.addEventListener("DOMContentLoaded", () => {
+  let progress = 0;
+  const progressBar = document.getElementById("progress");
+  const progressPercent = document.getElementById("progressPercent");
+  const intro = document.getElementById("intro");
+  const totalDuration = 3000;
+  const steps = 100;
+  const intervalTime = totalDuration / steps;
 
-const progressInterval=setInterval(()=>{
-  progress++;
-  progressBar.style.width=progress+'%';
-  progressPercent.textContent=progress+'%';
-  if(progress>=100){
-    clearInterval(progressInterval);
-    const intro=document.getElementById("intro");
-    intro.style.transition="opacity 0.5s";
-    intro.style.opacity=0;
-    setTimeout(()=>intro.remove(),500);
+  const progressInterval = setInterval(() => {
+    progress++;
+    progressBar.style.width = progress + '%';
+    progressPercent.textContent = progress + '%';
+    if (progress >= 100) {
+      clearInterval(progressInterval);
+      intro.style.transition = "opacity 0.5s";
+      intro.style.opacity = 0;
+      setTimeout(()=>intro.remove(),500);
+    }
+  }, intervalTime);
+
+  // ===== TIMER לפי לוח הזמנים =====
+  const timerEl = document.getElementById("timer");
+  const schedule = [
+    { hour: 11, type: 'training' }, { hour: 12, type: 'combat' },
+    { hour: 13, type: 'training' }, { hour: 14, type: 'combat' },
+    { hour: 15, type: 'training' }, { hour: 16, type: 'combat' },
+    { hour: 17, type: 'training' }, { hour: 18, type: 'combat' },
+    { hour: 19, type: 'combat' }, { hour: 20, type: 'combat' },
+    { hour: 21, type: 'training' }, { hour: 22, type: 'night' }
+  ];
+
+  function updateTimer() {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const nextEvent = schedule.find(e => e.hour > currentHour) || schedule[0];
+    let targetDay = now.getDate();
+    if (nextEvent.hour <= currentHour) targetDay += 1;
+    const target = new Date(now.getFullYear(), now.getMonth(), targetDay, nextEvent.hour, 0, 0);
+    let remaining = Math.floor((target - now) / 1000);
+    const minutes = Math.floor(remaining / 60).toString().padStart(2,'0');
+    const seconds = (remaining % 60).toString().padStart(2,'0');
+    timerEl.textContent = `${minutes}:${seconds} עד ${nextEvent.type === 'training' ? 'אימון' : 'לחימה'}`;
   }
-}, intervalTime);
-
-// ===== TIMER לפי לוח הזמנים =====
-const timerEl=document.getElementById("timer");
-const schedule=[
-  {hour:11,type:'training'},{hour:12,type:'combat'},
-  {hour:13,type:'training'},{hour:14,type:'combat'},
-  {hour:15,type:'training'},{hour:16,type:'combat'},
-  {hour:17,type:'training'},{hour:18,type:'combat'},
-  {hour:19,type:'combat'},{hour:20,type:'combat'},
-  {hour:21,type:'training'},{hour:22,type:'night'}
-];
-
-function updateTimer(){
-  const now=new Date();
-  const currentHour=now.getHours();
-  const nextEvent=schedule.find(e=>e.hour>currentHour)||schedule[0];
-  let targetDay=now.getDate();
-  if(nextEvent.hour<=currentHour) targetDay+=1;
-  const target=new Date(now.getFullYear(), now.getMonth(), targetDay, nextEvent.hour,0,0);
-  let remaining=Math.floor((target-now)/1000);
-  const minutes=Math.floor(remaining/60).toString().padStart(2,'0');
-  const seconds=(remaining%60).toString().padStart(2,'0');
-  timerEl.textContent=`${minutes}:${seconds} עד ${nextEvent.type==='training'?'אימון':'לחימה'}`;
-}
-updateTimer();
-setInterval(updateTimer,1000);
+  updateTimer();
+  setInterval(updateTimer,1000);
+});
 </script>
 
 </body>
