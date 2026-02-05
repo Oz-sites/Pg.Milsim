@@ -1,334 +1,758 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-<meta charset="UTF-8">
-<title>PG - Perfect Gaming</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;500;800&display=swap');
-*{margin:0;padding:0;box-sizing:border-box}
-::-webkit-scrollbar { display: none; }
-html { -ms-overflow-style: none; scrollbar-width: none; }
-body{
-  font-family:'Heebo',sans-serif;
-  background:radial-gradient(circle at top,#220033,#050005);
-  color:#fff;
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  overflow-x:hidden;
-}
-#effectCanvas{ position:fixed; inset:0; z-index:1; pointer-events:none; }
-#intro{
-  position:fixed; inset:0;
-  background:radial-gradient(circle at top,#220033,#050005);
-  z-index:9999; display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.intro-fade-out { opacity: 0; transform: scale(1.5); filter: blur(10px); pointer-events: none; }
-.intro-logo-wrapper{
-  width:180px; height:180px; border-radius:30px; padding:10px;
-  background:rgba(128,0,255,0.3); box-shadow:0 0 60px purple;
-  display:flex; align-items:center; justify-content:center; animation:spin 6s linear infinite;
-}
-.intro-logo{ width:160px; height:160px; border-radius:24px; background:url("PGLOGOGIF.gif") center/cover no-repeat; }
-#progressBar{ margin-top:30px; width:80%; max-width:400px; height:8px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden; }
-#progress{ width:0%; height:100%; background:purple; box-shadow:0 0(15px) purple; transition:width 0.1s linear; }
-.glitch {
-  position: relative;
-  animation: glitch-subtle 4s infinite;
-  color: #bf40ff;
-  text-shadow: 0 0 20px rgba(191, 64, 255, 0.7);
-}
-@keyframes glitch-subtle {
-  0%, 90%, 100% { transform: translate(0); text-shadow: 0 0 20px rgba(191, 64, 255, 0.7); }
-  92% { transform: translate(-1px, 1px); text-shadow: 2px 0 purple; }
-  94% { transform: translate(1px, -1px); text-shadow: -1px 0 #a855f7; }
-  96% { transform: translate(0); }
-}
-.logo-wrapper{ margin-top:60px; z-index:10; display:flex; flex-direction:column; align-items:center; width:100%; }
-.logo-frame{ width:160px; height:160px; border-radius:25px; padding:10px; background:rgba(128,0,255,0.2); box-shadow:0 0 50px rgba(128,0,255,0.3); display:flex; align-items:center; justify-content:center; animation:spin 20s linear infinite; }
-.logo{ width:140px; height:140px; border-radius:20px; background:url("PGLOGOGIF.gif") center/cover no-repeat; }
-.server-name-label {
-  margin-top: 20px;
-  font-size: 42px;
-  font-weight: 800;
-  color: #bf40ff;
-  text-shadow: 0 0 20px purple;
-  letter-spacing: 2px;
-}
-#serverButton{ margin-top:20px; padding:12px 30px; font-size:18px; font-weight:800; color:white; background:purple; border-radius:50px; text-decoration:none; box-shadow:0 10px 30px rgba(128,0,255,0.3); transition: .4s; z-index:10; border:none; cursor:pointer;}
-#serverButton:hover{ transform: translateY(-5px); box-shadow: 0 15px 40px rgba(128,0,255,0.5); background: #9d00ff; }
-.server-status-card {
-    margin-top: 25px; background: rgba(30, 0, 40, 0.85); backdrop-filter: blur(5px);
-    border: 1px solid purple; border-radius: 50px; padding: 12px 25px;
-    display: flex; flex-direction: row; align-items: center; gap: 15px; direction: rtl; z-index: 10;
-}
-.dot { width: 10px; height: 10px; border-radius: 50%; background: #bf40ff; box-shadow: 0 0 15px #bf40ff; }
-.dot.offline { background: #ff4d4d; box-shadow: 0 0 15px #ff4d4d; }
-.action-btn { background: rgba(255,255,255,0.1); border:none; color:white; cursor:pointer; padding: 6px 14px; border-radius: 50px; font-size:13px; transition:0.3s; font-weight: 800; border: 1px solid rgba(128,0,255,0.3); }
-.action-btn:hover { background: purple; border-color: white; transform: scale(1.05); }
-.section-title { color:purple; font-size:28px; margin: 50px 0 20px; z-index:10; font-weight:800; text-shadow: 0 0 10px purple; }
-.vs-container{ display:flex; align-items:stretch; justify-content:center; gap:20px; flex-wrap:wrap; z-index:10; width: 95%; margin-top: 20px; }
-.side-alliance { display: flex; flex-direction: column; gap: 20px; width: 320px; }
-.vs-glow { font-size: 70px; font-weight: 900; color: #fff; text-shadow: 0 0 20px purple; align-self: center; animation: vsPulse 1.5s ease-in-out infinite alternate; }
-@keyframes vsPulse { from { transform: scale(1); } to { transform: scale(1.1); } }
-.card{ width:100%; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:24px; padding:25px; text-align: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(10px); display: flex; flex-direction: column; justify-content: space-between; }
-.card.main-side { width: 350px; }
-.card:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(128,0,255,0.4); border-color: purple; }
-.card p { font-size: 14px; line-height: 1.5; color: #ccc; margin-top: 15px; direction: rtl; text-align: right;}
-.rank-btn { width:100%; margin-top:20px; padding:12px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; cursor: pointer; transition: 0.3s; font-weight: 800; }
-.rank-btn:hover { background: rgba(128,0,255,0.2); border-color: purple; }
-.schedule-box { background: rgba(128,0,255,0.05); border: 1px solid purple; border-radius: 20px; padding: 25px; width: 90%; max-width: 500px; z-index: 10; direction: rtl; }
-.rules-list { list-style: none; }
-.rules-list li { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 15px; font-size: 16px; }
-.rules-list li::before { content: "●"; color: purple; }
-.modal { display: none; position: fixed; inset: 0; z-index: 20000; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); align-items: center; justify-content: center; padding: 20px; }
-.modal.active { display: flex; }
-.modal-content { background: #0a0a0a; width: 100%; max-width: 500px; max-height: 80vh; border-radius: 30px; border-top: 5px solid purple; position: relative; display:flex; flex-direction:column; overflow: hidden; }
-.modal-body { overflow-y: auto; padding: 25px; direction: rtl; }
-.close-modal { position: absolute; top: 15px; left: 15px; cursor: pointer; color: white; font-size: 24px; z-index: 5; }
-#modalListContainer table { width: 100%; border-collapse: collapse; }
-.list-row { border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0; transform: translateX(20px); transition: 0.3s; }
-.list-row.show { opacity: 1; transform: translateX(0); }
-.list-row td { padding: 10px; text-align: right; vertical-align: middle; }
-.id-badge { color: purple; font-weight: 800; text-align: left !important; font-family: monospace; }
-.unit-divider { background: rgba(128,0,255,0.1); color: purple; font-size: 14px; font-weight: 800; text-align: center; padding: 8px 0; margin: 15px 0 5px 0; border-radius: 5px; border: 1px solid rgba(128,0,255,0.2); }
-.links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; width: 90%; max-width: 1000px; margin-bottom: 50px; z-index: 10; }
-.link-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(128,0,255,0.2); border-radius: 15px; padding: 20px; text-decoration: none; color: white; text-align: center; transition: 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; height: 80px; }
-.link-item h3 { font-size: 18px; font-weight: 800; letter-spacing: 1px; transition: 0.3s; }
-.link-item:hover { background: rgba(128,0,255,0.1); border-color: purple; transform: translateY(-5px); box-shadow: 0 8px 25px rgba(128,0,255,0.2); }
-.link-item:hover h3 { color: purple; text-shadow: 0 0 10px rgba(128,0,255,0.5); }
-footer{ padding:40px; color:#555; text-align:center; font-size:14px; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); line-height: 1.5; }
-@keyframes spin{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
-</style>
+    <meta charset="UTF-8">
+    <title>PG - Perfect Gaming</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;500;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        html {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        body {
+            font-family: 'Heebo',sans-serif;
+            background: radial-gradient(circle at top,#220033,#050005);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        #effectCanvas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+                filter: blur(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes rowFadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        #intro {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at top,#220033,#050005);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .intro-fade-out {
+            opacity: 0;
+            transform: scale(1.5);
+            filter: blur(10px);
+            pointer-events: none;
+        }
+
+        .intro-logo-wrapper {
+            width: 180px;
+            height: 180px;
+            border-radius: 30px;
+            padding: 10px;
+            background: rgba(128,0,255,0.3);
+            box-shadow: 0 0 60px purple;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: spin 6s linear infinite;
+        }
+
+        .intro-logo {
+            width: 160px;
+            height: 160px;
+            border-radius: 24px;
+            background: url("PGLOGOGIF.gif") center/cover no-repeat;
+        }
+
+        #progressBar {
+            margin-top: 30px;
+            width: 80%;
+            max-width: 400px;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #progress {
+            width: 0%;
+            height: 100%;
+            background: purple;
+            box-shadow: 0 0(15px) purple;
+            transition: width 0.1s linear;
+        }
+
+        .glitch {
+            position: relative;
+            animation: glitch-subtle 4s infinite;
+            color: #bf40ff;
+            text-shadow: 0 0 20px rgba(191, 64, 255, 0.7);
+        }
+
+        @keyframes glitch-subtle {
+            0%, 90%, 100% {
+                transform: translate(0);
+                text-shadow: 0 0 20px rgba(191, 64, 255, 0.7);
+            }
+
+            92% {
+                transform: translate(-1px, 1px);
+                text-shadow: 2px 0 purple;
+            }
+
+            94% {
+                transform: translate(1px, -1px);
+                text-shadow: -1px 0 #a855f7;
+            }
+
+            96% {
+                transform: translate(0);
+            }
+        }
+
+        .logo-wrapper {
+            margin-top: 60px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo-frame {
+            width: 160px;
+            height: 160px;
+            border-radius: 25px;
+            padding: 10px;
+            background: rgba(128,0,255,0.2);
+            box-shadow: 0 0 50px rgba(128,0,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: spin 20s linear infinite;
+        }
+
+        .logo {
+            width: 140px;
+            height: 140px;
+            border-radius: 20px;
+            background: url("PGLOGOGIF.gif") center/cover no-repeat;
+        }
+
+        .server-name-label {
+            margin-top: 20px;
+            font-size: 42px;
+            font-weight: 800;
+            color: #bf40ff;
+            text-shadow: 0 0 20px purple;
+            letter-spacing: 2px;
+        }
+
+        #serverButton {
+            margin-top: 20px;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: 800;
+            color: white;
+            background: purple;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(128,0,255,0.3);
+            transition: .4s;
+            z-index: 10;
+            border: none;
+            cursor: pointer;
+        }
+
+            #serverButton:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(128,0,255,0.5);
+                background: #9d00ff;
+            }
+
+        .server-status-card {
+            margin-top: 25px;
+            background: rgba(30, 0, 40, 0.85);
+            backdrop-filter: blur(5px);
+            border: 1px solid purple;
+            border-radius: 50px;
+            padding: 12px 25px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 15px;
+            direction: rtl;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #bf40ff;
+            box-shadow: 0 0 15px #bf40ff;
+        }
+
+            .dot.offline {
+                background: #ff4d4d;
+                box-shadow: 0 0 15px #ff4d4d;
+            }
+
+        .action-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 13px;
+            transition: 0.3s;
+            font-weight: 800;
+            border: 1px solid rgba(128,0,255,0.3);
+        }
+
+            .action-btn:hover {
+                background: purple;
+                border-color: white;
+                transform: scale(1.05);
+            }
+
+        .section-title {
+            color: purple;
+            font-size: 28px;
+            margin: 50px 0 20px;
+            z-index: 10;
+            font-weight: 800;
+            text-shadow: 0 0 10px purple;
+        }
+
+        .vs-container {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            z-index: 10;
+            width: 95%;
+            margin-top: 20px;
+        }
+
+        .side-alliance {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 320px;
+        }
+
+        .vs-glow {
+            font-size: 70px;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 20px purple;
+            align-self: center;
+            animation: vsPulse 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes vsPulse {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.1);
+            }
+        }
+
+        .card {
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 25px;
+            text-align: center;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+            .card.main-side {
+                width: 350px;
+            }
+
+            .card:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 40px rgba(128,0,255,0.4);
+                border-color: purple;
+            }
+
+            .card p {
+                font-size: 14px;
+                line-height: 1.5;
+                color: #ccc;
+                margin-top: 15px;
+                direction: rtl;
+                text-align: right;
+            }
+
+            /* הגדלת טקסט צה"ל */
+            .card.main-side p {
+                font-size: 20px;
+                line-height: 1.4;
+                font-weight: 500;
+                color: #efefef;
+                text-align: center;
+            }
+
+        .rank-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 800;
+        }
+
+            .rank-btn:hover {
+                background: rgba(128,0,255,0.2);
+                border-color: purple;
+            }
+
+        .schedule-box {
+            background: rgba(128,0,255,0.05);
+            border: 1px solid purple;
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            z-index: 10;
+            direction: rtl;
+        }
+
+        .rules-list {
+            list-style: none;
+        }
+
+            .rules-list li {
+                padding: 12px;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                font-size: 16px;
+            }
+
+                .rules-list li::before {
+                    content: "●";
+                    color: purple;
+                }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 20000;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(15px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+            .modal.active {
+                display: flex;
+            }
+
+        .modal-content {
+            background: #0a0a0a;
+            width: 100%;
+            max-width: 600px;
+            max-height: 80vh;
+            border-radius: 30px;
+            border-top: 5px solid purple;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: modalAppear 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        .modal-body {
+            overflow-y: auto;
+            padding: 25px;
+            direction: rtl;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            cursor: pointer;
+            color: white;
+            font-size: 24px;
+            z-index: 110;
+        }
+
+        #modalListContainer table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .list-row {
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            opacity: 0;
+            transform: translateX(20px);
+            animation: rowFadeIn 0.4s ease forwards;
+        }
+
+        .id-badge {
+            color: purple;
+            font-weight: 800;
+            text-align: left !important;
+            font-family: monospace;
+        }
+
+        .unit-divider {
+            background: rgba(128,0,255,0.1);
+            color: purple;
+            font-size: 14px;
+            font-weight: 800;
+            text-align: center;
+            padding: 8px 0;
+            margin: 15px 0 5px 0;
+            border-radius: 5px;
+            border: 1px solid rgba(128,0,255,0.2);
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            width: 90%;
+            max-width: 1000px;
+            margin-bottom: 50px;
+            z-index: 10;
+        }
+
+        .link-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(128,0,255,0.2);
+            border-radius: 15px;
+            padding: 20px;
+            text-decoration: none;
+            color: white;
+            text-align: center;
+            transition: 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+        }
+
+            .link-item h3 {
+                font-size: 18px;
+                font-weight: 800;
+                letter-spacing: 1px;
+                transition: 0.3s;
+            }
+
+            .link-item:hover {
+                background: rgba(128,0,255,0.1);
+                border-color: purple;
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(128,0,255,0.2);
+            }
+
+        footer {
+            padding: 40px;
+            color: #555;
+            text-align: center;
+            font-size: 14px;
+            width: 100%;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            line-height: 1.5;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 <body>
-<canvas id="effectCanvas"></canvas>
-<div id="mainModal" class="modal" onclick="if(event.target == this) closeModal()">
-    <div class="modal-content">
-        <span class="close-modal" onclick="closeModal()">✕</span>
-        <div class="modal-body">
-            <h2 id="modalTitle" style="text-align:center; margin-bottom:10px; font-weight:800;"></h2>
-            <div id="modalListContainer"></div>
+    <canvas id="effectCanvas"></canvas>
+    <div id="mainModal" class="modal" onclick="if(event.target == this) closeModal()">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">✕</span>
+            <div class="modal-body">
+                <h2 id="modalTitle" style="text-align:center; margin-bottom:15px; font-weight:800; padding: 0 40px;"></h2>
+                <div id="modalListContainer"></div>
+            </div>
         </div>
     </div>
-</div>
-<div id="intro">
-  <div class="intro-logo-wrapper"><div class="intro-logo"></div></div>
-  <h1 class="glitch" style="margin-top: 30px; font-weight: 800;">PG MILSIM V2</h1>
-  <div id="progressBar"><div id="progress"></div></div>
-</div>
-<div class="logo-wrapper">
-  <div class="logo-frame"><div class="logo"></div></div>
-  <h1 class="server-name-label glitch">PG MILSIM V2</h1>
-  <a href="fivem://connect/9p77qb" id="serverButton">התחברות לשרת</a>
-  <div class="server-status-card">
-      <div style="display:flex; align-items:center; gap:8px; padding-left:10px;"><div id="statusDot" class="dot"></div><span id="statusTxt" style="font-weight:800;">טוען...</span></div>
-      <div style="width: 1px; height: 15px; background: rgba(255,255,255,0.1);"></div>
-      <div>שחקנים: <b id="playerCount" style="direction: ltr; display: inline-block;">-- / --</b></div>
-      <button class="action-btn" onclick="showPlayers()">רשימת שחקנים & ID</button>
-  </div>
-</div>
-<h2 class="section-title glitch">הכוחות בשטח</h2>
-<section class="vs-container">
-    <div class="side-alliance">
-        <div class="card" style="border-top: 4px solid #bf40ff;">
-          <h3 style="color:#bf40ff; font-size:22px;">ארגון פיג׳י</h3>
-          <p>הכוח הלוחם בשטח הבנוי. מומחים במארבי פתע ולוחמה אסימטרית קשה בכל הגזרות.</p>
-          <button class="rank-btn" onclick="openRanks('pg')">לצפייה בדרגות</button>
-        </div>
-        <div class="card" style="border-top: 4px solid #9d00ff;">
-          <h3 style="color:#9d00ff; font-size:22px;">ארגון אל פיג׳י</h3>
-          <p>יחידת העילית האסטרטגית. אחראית על מערך המטוסים, הטנקים והטילים המתקדמים ביותר בשטח.</p>
-          <button class="rank-btn" onclick="openRanks('alpg')">לצפייה בדרגות</button>
+    <div id="intro">
+        <div class="intro-logo-wrapper"><div class="intro-logo"></div></div>
+        <h1 class="glitch" style="margin-top: 30px; font-weight: 800;">PG MILSIM V2</h1>
+        <div id="progressBar"><div id="progress"></div></div>
+    </div>
+    <div class="logo-wrapper">
+        <div class="logo-frame"><div class="logo"></div></div>
+        <h1 class="server-name-label glitch">PG MILSIM V2</h1>
+        <button id="serverButton" onclick="openConnectModal()">התחברות לשרת</button>
+        <div class="server-status-card">
+            <div style="display:flex; align-items:center; gap:8px; padding-left:10px;"><div id="statusDot" class="dot"></div><span id="statusTxt" style="font-weight:800;">טוען...</span></div>
+            <div style="width: 1px; height: 15px; background: rgba(255,255,255,0.1);"></div>
+            <div>שחקנים: <b id="playerCount" style="direction: ltr; display: inline-block;">-- / --</b></div>
+            <button class="action-btn" onclick="showPlayers()">רשימת שחקנים & ID</button>
         </div>
     </div>
-    <div class="vs-glow">VS</div>
-    <div class="card main-side" style="border-top: 4px solid #e0aaff;">
-      <h3 style="color:#e0aaff; font-size:26px;">צה״ל</h3>
-      <p>צבא ההגנה לישראל. הכוח הצבאי החזק והמאורגן. פועל עם מודיעין מדויק, עליונות אווירית וכוחות קרקע מיומנים למיגור כל איום וטיהור קיני הטרור.</p>
-      <button class="rank-btn" onclick="openRanks('idf')" style="border-color: #e0aaff;">לצפייה בדרגות</button>
+    <h2 class="section-title glitch">הכוחות בשטח</h2>
+    <section class="vs-container">
+        <div class="side-alliance">
+            <div class="card" style="border-top: 4px solid #bf40ff;">
+                <h3 style="color:#bf40ff; font-size:22px;">ארגון פיג׳י</h3>
+                <p>הכוח הלוחם בשטח הבנוי. מומחים במארבי פתע ולוחמה אסימטרית קשה בכל הגזרות.</p>
+                <button class="rank-btn" onclick="openRanks('pg')">לצפייה בדרגות</button>
+            </div>
+            <div class="card" style="border-top: 4px solid #9d00ff;">
+                <h3 style="color:#9d00ff; font-size:22px;">ארגון אל פיג׳י</h3>
+                <p>יחידת העילית האסטרטגית. אחראית על מערך המטוסים, הטנקים והטילים המתקדמים ביותר בשטח.</p>
+                <button class="rank-btn" onclick="openRanks('alpg')">לצפייה בדרגות</button>
+            </div>
+        </div>
+        <div class="vs-glow">VS</div>
+        <div class="card main-side" style="border-top: 4px solid #e0aaff;">
+            <h3 style="color:#e0aaff; font-size:26px;">צה״ל</h3>
+            <p>צבא ההגנה לישראל. הכוח הצבאי החזק והמאורגן. פועל עם מודיעין מדויק, עליונות אווירית וכוחות קרקע מיומנים למיגור כל איום וטיהור קיני הטרור בכל הגזרות.</p>
+            <button class="rank-btn" onclick="openRanks('idf')" style="border-color: #e0aaff;">לצפייה בדרגות</button>
+        </div>
+    </section>
+    <h2 class="section-title">לוח זמנים</h2>
+    <div class="schedule-box">
+        <div id="timer" style="font-size: 26px; font-weight: 800; text-align: center; margin-bottom: 20px; text-shadow: 0 0 10px purple;">מחשב זמן...</div>
+        <ul class="rules-list" id="fullSchedule"></ul>
     </div>
-</section>
-<h2 class="section-title">לוח זמנים</h2>
-<div class="schedule-box">
-    <div id="timer" style="font-size: 26px; font-weight: 800; text-align: center; margin-bottom: 20px; text-shadow: 0 0 10px purple;">מחשב זמן...</div>
-    <ul class="rules-list" id="fullSchedule"></ul>
-</div>
-<h2 class="section-title">קישורים מהירים</h2>
-<div class="links-grid">
-    <a href="https://discord.gg/epE6e2T4W8" target="_blank" class="link-item"><h3>DISCORD</h3></a>
-    <a href="https://osublo3211-gif.github.io/perfectgaming-unban/?v=3" target="_blank" class="link-item"><h3>UNBAN</h3></a>
-    <a href="https://my.israelgives.org/he/campaign/pgmilsim" target="_blank" class="link-item"><h3>DONATE</h3></a>
-</div>
-<footer>
-    © Pg - Perfect Gaming | 2026<br>
-    נוצר על ידי Oz
-</footer>
-<script>
-const pgRanks = [
-    {type: "divider", label: "לוחמים"}, "0 - חייל ארגון", "1 - לוחם ארגון", "2 - אחראי מחבלים", "3 - אחראי מבצעים",
-    {type: "divider", label: "יחידת אסד"}, "4 - לוחם", "5 - לוחם בכיר", "6 - סגן מפקד", "7 - מפקד",
-    {type: "divider", label: "פיקוד"}, "18 - סמזכ\"ל", "19 - מזכ\"ל"
-];
-const idfRanks = [
-    {type: "divider", label: "חוגרים"}, "0 - טוראי", "1 - רבט", "2 - סמל", "3 - סמל ראשון",
-    {type: "divider", label: "קצונה"}, "10 - תת אלוף", "11 - אלוף", "12 - רב אלוף"
-];
-const alpgRanks = [
-    {type: "divider", label: "מערך אסטרטגי"}, "בקרוב...", "רשימת הדרגות תעודכן"
-];
-const scheduleData = [
-    {h:11,l:"אימון"}, {h:12,l:"לחימה"}, {h:13,l:"אימון"},
-    {h:14,l:"לחימה"}, {h:15,l:"אימון"}, {h:16,l:"לחימה"},
-    {h:17,l:"אימון"}, {h:18,l:"לחימה"}, {h:19,l:"לחימה"},
-    {h:20,l:"לחימה"}, {h:21,l:"אימון"}, {h:22,l:"לחימה ללא הגבלה"}
-];
-function updateSchedule() {
-    const now = new Date();
-    const curH = now.getHours();
-    const listEl = document.getElementById('fullSchedule');
-    if(!listEl) return;
-    listEl.innerHTML = "";
-    scheduleData.forEach(ev => {
-        const li = document.createElement('li');
-        li.innerHTML = `<b>${ev.h}:00</b> - ${ev.l}`;
-        if (curH === ev.h) {
-            li.style.color = "#bf40ff";
-            li.style.fontWeight = "800";
-        }
-        listEl.appendChild(li);
-    });
-    let currentEvent = scheduleData.find(e => e.h === curH);
-    let timerText = "";
-    if (currentEvent) {
-        if (currentEvent.l === "לחימה ללא הגבלה") {
-            let target = new Date();
-            target.setHours(11, 0, 0, 0);
-            if (now.getHours() >= 11) { target.setDate(target.getDate() + 1); }
-            const diff = Math.floor((target - now) / 1000);
-            const h = Math.floor(diff/3600).toString().padStart(2,'0');
-            const m = Math.floor((diff%3600)/60).toString().padStart(2,'0');
-            const s = (diff%60).toString().padStart(2,'0');
-            timerText = `${h}:${m}:${s} עד אימון (11:00)`;
-        } else {
-            let endH = curH;
-            for (let i = scheduleData.findIndex(e => e.h === curH); i < scheduleData.length; i++) {
-                if (scheduleData[i].l === currentEvent.l) { endH = scheduleData[i].h; } else { break; }
-            }
-            const target = new Date(); target.setHours(endH + 1, 0, 0, 0);
-            const diff = Math.floor((target - now) / 1000);
-            if(diff <= 0) { timerText = "מעדכן..."; }
-            else {
-                const h = Math.floor(diff/3600).toString().padStart(2,'0');
-                const m = Math.floor((diff%3600)/60).toString().padStart(2,'0');
-                const s = (diff%60).toString().padStart(2,'0');
+    <div class="links-grid" style="margin-top: 50px;">
+        <a href="https://discord.gg/epE6e2T4W8" target="_blank" class="link-item"><h3>DISCORD</h3></a>
+        <a href="https://osublo3211-gif.github.io/perfectgaming-unban/?v=3" target="_blank" class="link-item"><h3>UNBAN</h3></a>
+        <a href="https://my.israelgives.org/he/campaign/pgmilsim" target="_blank" class="link-item"><h3>DONATE</h3></a>
+    </div>
+    <footer>© Pg - Perfect Gaming | 2026<br>נוצר על ידי Oz</footer>
+
+    <script>
+        const pgRanks = [
+            { type: "divider", label: "לוחמים" }, "חייל ארגון", "לוחם ארגון", "אחראי מחבלים", "אחראי מבצעים",
+            { type: "divider", label: "יחידת אסד" }, "לוחם", "לוחם בכיר", "סגן מפקד", "מפקד",
+            { type: "divider", label: "עורב שחור" }, "מחבל", "מחבל בכיר", "סגן מפקד", "מפקד",
+            { type: "divider", label: "פיקוד רצועה" }, "סגן מפקד רצועה", "מפקד רצועה",
+            { type: "divider", label: "פיקוד אווירי" }, "סגן מפקד אווירי", "מפקד אווירי",
+            { type: "divider", label: "הנהגה עליונה" }, "סגן מפקד כללי", "מפקד כללי", "סמזכ\"ל", "מזכ\"ל"
+        ];
+        const idfRanks = [
+            { type: "divider", label: "דרגות חוגרים" }, "טוראי", "רבט", "סמל", "סמל ראשון", "סג\"מ", "סגן", "סרן", "רב סרן",
+            { type: "divider", label: "דרגות קצונה" }, "סגן אלוף", "אלוף משנה", "תת אלוף", "אלוף", "רב אלוף",
+            { type: "divider", label: "חיל האוויר" }, "טייס חיל-האוויר", "טייס בכיר חיל-האוויר", "סגן משנה חיל-האוויר", "סגן מפקד חיל-האוויר", "מפקד חיל-האוויר",
+            { type: "divider", label: "יחידת אגוז" }, "לוחם-אגוז", "לוחם בכיר-אגוז",
+            { type: "divider", label: "משמר הגבול" }, "חייל", "חייל בכיר", "פקד", "רב-פקד", "סגן ניצב", "ניצב משנה", "תת ניצב", "ניצב",
+            { type: "divider", label: "יחידת ימ\"מ" }, "רס\"מ", "רס\"ב", "סגן מפקד ימ\"מ", "מפקד ימ\"מ"
+        ];
+        const alpgRanks = [{ type: "divider", label: "מערך אסטרטגי" }, "בקרוב...", "רשימת הדרגות תעודכן"];
+
+        const scheduleData = [
+            { h: 11, l: "אימון" }, { h: 12, l: "לחימה" }, { h: 13, l: "אימון" },
+            { h: 14, l: "לחימה" }, { h: 15, l: "אימון" }, { h: 16, l: "לחימה" },
+            { h: 17, l: "אימון" }, { h: 18, l: "לחימה" }, { h: 19, l: "לחימה" },
+            { h: 20, l: "לחימה" }, { h: 21, l: "אימון" }, { h: 22, l: "לחימה ללא הגבלה" }
+        ];
+
+        function updateSchedule() {
+            const now = new Date();
+            const curH = now.getHours();
+            const listEl = document.getElementById('fullSchedule');
+            if (!listEl) return;
+            listEl.innerHTML = "";
+            scheduleData.forEach(ev => {
+                const li = document.createElement('li');
+                li.innerHTML = `<b>${ev.h}:00</b> - ${ev.l}`;
+                if (curH === ev.h) {
+                    li.style.color = "#bf40ff";
+                    li.style.fontWeight = "800";
+                }
+                listEl.appendChild(li);
+            });
+
+            let currentEvent = scheduleData.find(e => e.h === curH);
+            let timerText = "";
+            if (currentEvent) {
+                let target = new Date();
+                if (currentEvent.l === "לחימה ללא הגבלה") {
+                    target.setHours(11, 0, 0, 0);
+                    if (now.getHours() >= 11) target.setDate(target.getDate() + 1);
+                } else {
+                    let endH = curH;
+                    for (let i = scheduleData.findIndex(e => e.h === curH); i < scheduleData.length; i++) {
+                        if (scheduleData[i].l === currentEvent.l) endH = scheduleData[i].h; else break;
+                    }
+                    target.setHours(endH + 1, 0, 0, 0);
+                }
+                const diff = Math.floor((target - now) / 1000);
+                const h = Math.floor(diff / 3600).toString().padStart(2, '0'), m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0'), s = (diff % 60).toString().padStart(2, '0');
                 timerText = `${h}:${m}:${s} עד סוף ה${currentEvent.l}`;
+            } else {
+                timerText = "הפעילות הבאה בדרך...";
             }
+            document.getElementById("timer").textContent = timerText;
         }
-    } else {
-        let nextEv = scheduleData.find(e => e.h > curH);
-        if (nextEv) {
-            const target = new Date(); target.setHours(nextEv.h, 0, 0, 0);
-            const diff = Math.floor((target - now) / 1000);
-            const h = Math.floor(diff/3600).toString().padStart(2,'0');
-            const m = Math.floor((diff%3600)/60).toString().padStart(2,'0');
-            const s = (diff%60).toString().padStart(2,'0');
-            timerText = `${h}:${m}:${s} עד ${nextEv.l}`;
-        } else {
-            let target = new Date(); target.setHours(11, 0, 0, 0); target.setDate(target.getDate() + 1);
-            const diff = Math.floor((target - now) / 1000);
-            const h = Math.floor(diff/3600).toString().padStart(2,'0');
-            const m = Math.floor((diff%3600)/60).toString().padStart(2,'0');
-            const s = (diff%60).toString().padStart(2,'0');
-            timerText = `${h}:${m}:${s} עד אימון`;
+        setInterval(updateSchedule, 1000); updateSchedule();
+
+        async function showPlayers() {
+            const container = document.getElementById('modalListContainer');
+            document.getElementById('modalTitle').textContent = "שחקנים מחוברים";
+            container.innerHTML = "טוען...";
+            document.getElementById('mainModal').classList.add('active');
+            try {
+                const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=https://servers-frontend.fivem.net/api/servers/single/9p77qb`);
+                const data = await res.json();
+                let html = "<table>";
+                data.Data.players.forEach((p, i) => { html += `<tr class="list-row" style="animation-delay:${i * 0.03}s"><td>${p.name}</td><td style="color:purple; font-weight:800;">ID: ${p.id}</td></tr>`; });
+                html += "</table>"; container.innerHTML = html;
+            } catch (e) { container.innerHTML = "שגיאה בטעינה."; }
         }
-    }
-    document.getElementById("timer").textContent = timerText;
-}
-setInterval(updateSchedule, 1000); updateSchedule();
-async function showPlayers() {
-    const container = document.getElementById('modalListContainer');
-    const title = document.getElementById('modalTitle');
-    title.textContent = "שחקנים מחוברים";
-    title.style.color = "#bf40ff";
-    container.innerHTML = "<p style='text-align:center;'>טוען נתונים...</p>";
-    document.getElementById('mainModal').classList.add('active');
-    try {
-        const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=https://servers-frontend.fivem.net/api/servers/single/9p77qb`);
-        const data = await res.json();
-        const players = data.Data.players;
-        if (!players || players.length === 0) {
-            container.innerHTML = "<p style='text-align:center;'>אין שחקנים מחוברים.</p>";
-            return;
+
+        function openRanks(type) {
+            const container = document.getElementById('modalListContainer');
+            let ranks, label;
+            if (type === 'pg') { ranks = pgRanks; label = 'ארגון פיג׳י'; }
+            else if (type === 'idf') { ranks = idfRanks; label = 'צה"ל'; }
+            else { ranks = alpgRanks; label = 'ארגון אל פיג׳י'; }
+            document.getElementById('modalTitle').textContent = "דרגות " + label;
+            let html = "<table>";
+            ranks.forEach((item, i) => {
+                const delay = i * 0.03;
+                if (typeof item === 'object') html += `<tr class="list-row" style="animation-delay:${delay}s"><td colspan="2"><div class="unit-divider">${item.label}</div></td></tr>`;
+                else html += `<tr class="list-row" style="animation-delay:${delay}s"><td style="text-align:center; padding:10px;">${item}</td></tr>`;
+            });
+            html += "</table>"; container.innerHTML = html; document.getElementById('mainModal').classList.add('active');
         }
-        let html = "<table>";
-        players.forEach(p => { html += `<tr class="list-row show"><td>${p.name}</td><td class="id-badge">ID: ${p.id}</td></tr>`; });
-        html += "</table>";
-        container.innerHTML = html;
-    } catch (e) { container.innerHTML = "<p style='text-align:center; color:orange;'>שגיאה בטעינה.</p>"; }
-}
-function openRanks(type) {
-    const container = document.getElementById('modalListContainer');
-    const title = document.getElementById('modalTitle');
-    let ranks, label;
-    if(type === 'pg') { ranks = pgRanks; label = 'ארגון פיג׳י'; }
-    else if(type === 'idf') { ranks = idfRanks; label = 'צה"ל'; }
-    else { ranks = alpgRanks; label = 'ארגון אל פיג׳י'; }
-    title.textContent = "דרגות " + label;
-    title.style.color = "#bf40ff";
-    let html = "<table>";
-    ranks.forEach(item => {
-        if (typeof item === 'object') { html += `<tr class="list-row show"><td colspan="2"><div class="unit-divider">${item.label}</div></td></tr>`; }
-        else { html += `<tr class="list-row show"><td style="text-align:center;">${item}</td></tr>`; }
-    });
-    html += "</table>";
-    container.innerHTML = html;
-    document.getElementById('mainModal').classList.add('active');
-}
-function closeModal() { document.getElementById('mainModal').classList.remove('active'); }
-async function fetchStatus() {
-    const sTxt = document.getElementById("statusTxt");
-    const pCount = document.getElementById("playerCount");
-    const dot = document.getElementById("statusDot");
-    try {
-        const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=https://servers-frontend.fivem.net/api/servers/single/9p77qb`);
-        const data = await res.json();
-        if (data && data.Data) {
-            sTxt.textContent = "ONLINE"; sTxt.style.color = "#bf40ff";
-            dot.className = "dot";
-            pCount.textContent = `${data.Data.clients} / ${data.Data.sv_maxclients}`;
+
+        function openConnectModal() {
+            document.getElementById('modalTitle').textContent = "אם אתה חדש צריך לקרוא את החוקים אם לא לחץ כן כדי להתחבר";
+            document.getElementById('modalListContainer').innerHTML = `
+                    <div style="display:flex; flex-direction:column; gap:15px; padding:10px;">
+                        <a href="fivem://connect/9p77qb" style="text-decoration:none;"><button class="rank-btn" style="padding:20px; font-size:18px; background:purple;">כן (התחברות)</button></a>
+                        <button class="rank-btn" style="padding:20px; font-size:18px;" onclick="openRules()">חדש (קרא חוקים)</button>
+                    </div>`;
+            document.getElementById('mainModal').classList.add('active');
         }
-    } catch (e) { sTxt.textContent = "OFFLINE"; sTxt.style.color = "#ff4d4d"; dot.className = "dot offline"; }
-}
-fetchStatus(); setInterval(fetchStatus, 45000);
-let prg=0; const ivl=setInterval(()=>{
-  const pBar = document.getElementById("progress");
-  if(!pBar) return;
-  prg+=2; pBar.style.width=prg+"%";
-  if(prg>=100){ clearInterval(ivl); document.getElementById("intro").classList.add("intro-fade-out"); }
-},30);
-const c=document.getElementById("effectCanvas"); const ctx=c.getContext("2d");
-function resize(){c.width=window.innerWidth; c.height=window.innerHeight;}
-resize(); window.onresize = resize;
-let particles=[...Array(80)].map(()=>({
-  x:Math.random()*c.width, y:Math.random()*c.height, 
-  s:Math.random()*1+0.5, o:Math.random()*0.5, color: "rgba(128, 0, 255, "
-}));
-function draw(){
-  ctx.clearRect(0,0,c.width,c.height); 
-  particles.forEach(p=>{ 
-    ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); 
-    ctx.fillStyle = p.color + p.o + ")"; ctx.fill(); 
-    p.y -= p.s * 0.5;
-    if(p.y < 0) { p.y = c.height; p.x = Math.random()*c.width; }
-  });
-  requestAnimationFrame(draw);
-}
-draw();
-</script>
+
+        function openRules() {
+            document.getElementById('modalTitle').textContent = "מרכז פקודות מבצע - חוקי השרת";
+            document.getElementById('modalListContainer').innerHTML = `
+                <div style="text-align:right; font-size:14px; line-height:1.6; color:white;">
+                    <p style="color:#bf40ff; border-bottom:1px solid #bf40ff; margin-bottom:10px; font-weight:800; font-size:16px;">חוקי יסוד (Common Rules)</p>
+                    <p><b>● RDM:</b> הרג ללא סיבה מוצדקת ורולפליי מקדים.<br><span style="color:#ff4d4d; font-weight:800;">עונש: באן במקום.</span></p>
+                    <p><b>● VDM:</b> דריסת שחקנים או שימוש ברכב כנשק.<br><span style="color:#ff4d4d; font-weight:800;">עונש: באן במקום.</span></p>
+                    <p><b>● Fail RP:</b> ביצוע פעולות לא הגיוניות או לא מציאותיות.<br><span style="color:#ff4d4d; font-weight:800;">עונש: באן לשיקול צוות.</span></p>
+                    <p><b>● Fear RP:</b> חובה לפחד על חיי הדמות שלך כשמכוונים עליך נשק.<br><span style="color:#ff4d4d; font-weight:800;">עונש: באן ליומיים.</span></p>
+                    <p><b>● NLR:</b> לאחר מוות, הדמות שוכחת את האירוע האחרון ואסור לחזור לאזור למשך 20 דקות.<br><span style="color:#ff4d4d; font-weight:800;">עונש: באן ליומיים.</span></p>
+                    <p><b>● שבירת דמות:</b> דיבור OOC בתוך השרת.<br><span style="color:#ff4d4d; font-weight:800;">עונש: באן ליומיים.</span></p>
+
+                    <p style="color:#bf40ff; border-bottom:1px solid #bf40ff; margin:15px 0 10px 0; font-weight:800; font-size:16px;">נהלים מבצעיים ומו״מ</p>
+                    <p><b>1. מו״מ בארגון:</b> רק חייל בכיר (מפקד רצועה ומעלה) רשאי לנהל מו״מ.<br><span style="color:#ff4d4d; font-weight:800;">עונש: באן ליומיים.</span></p>
+                    <p><b>2. מו״מ בצה״ל:</b> רק אלוף משנה ומעלה רשאי לנהל מו״מ.<br><span style="color:#ff4d4d; font-weight:800;">עונש: באן ליומיים.</span></p>
+                    <p><b>3. חסינות מו״מ:</b> בזמן שמתנהל מו״מ, אסור לעשות מבצע, לעבור את הגבול או לירות.<br><span style="color:#ff4d4d; font-weight:800;">עונש: באן במקום.</span></p>
+
+                    <p style="color:#bf40ff; border-bottom:1px solid #bf40ff; margin:15px 0 10px 0; font-weight:800; font-size:16px;">חוקי פריצה ומבצעים</p>
+                    <p><b>4. פריצות הארגון:</b> פריצה ל-703 מחייבת 10 חיילים יחד. פריצה לרמת דוד מחייבת 15 חיילים יחד.<br><span style="color:#ff4d4d; font-weight:800;">עונש: באן במקום.</span></p>
+                    <p><b>5. שעות פעילות:</b> חובה להיצמד ללוח הזמנים. באמצע סיטואציה - מבטלים והולכים להתאמן.<br><span style="color:#ff4d4d; font-weight:800;">עונש: באן במקום.</span></p>
+                    <p><b>6. טרולים ומשמעת:</b> הפרעה בשיחות מפקדים (פיהוקים, דיבור לא במקום).<br><span style="color:#ff4d4d; font-weight:800;">עונש: באן ליומיים.</span></p>
+                    <p><b>7. קידומים:</b> אין לעלות בדרגה ללא אישור רמטכ״ל או מזכ״ל.<br><span style="color:#ff4d4d; font-weight:800;">עונש: איפוס דרגות ובאן לשיקול צוות.</span></p>
+                    <p><b>8. חיל האוויר:</b> תקיפה מעבר לגדר - חופשי. בגבול - אך ורק אם המטרה בתוך רכב.<br><span style="color:#ff4d4d; font-weight:800;">עונש: באן ליומיים.</span></p>
+                </div>`;
+            document.getElementById('mainModal').classList.add('active');
+        }
+
+        function closeModal() { document.getElementById('mainModal').classList.remove('active'); }
+        async function fetchStatus() {
+            try {
+                const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=https://servers-frontend.fivem.net/api/servers/single/9p77qb`);
+                const data = await res.json();
+                if (data && data.Data) {
+                    document.getElementById("statusTxt").textContent = "ONLINE";
+                    document.getElementById("playerCount").textContent = `${data.Data.clients} / ${data.Data.sv_maxclients}`;
+                }
+            } catch (e) { document.getElementById("statusTxt").textContent = "OFFLINE"; }
+        }
+        fetchStatus(); setInterval(fetchStatus, 45000);
+
+        let prg = 0; const ivl = setInterval(() => {
+            const pBar = document.getElementById("progress"); if (!pBar) return;
+            prg += 2; pBar.style.width = prg + "%";
+            if (prg >= 100) { clearInterval(ivl); document.getElementById("intro").classList.add("intro-fade-out"); }
+        }, 30);
+
+        const c = document.getElementById("effectCanvas"); const ctx = c.getContext("2d");
+        function resize() { c.width = window.innerWidth; c.height = window.innerHeight; }
+        resize(); window.onresize = resize;
+        let particles = [...Array(80)].map(() => ({ x: Math.random() * c.width, y: Math.random() * c.height, s: Math.random() * 1 + 0.5, o: Math.random() * 0.5, color: "rgba(128, 0, 255, " }));
+        function draw() {
+            ctx.clearRect(0, 0, c.width, c.height);
+            particles.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2); ctx.fillStyle = p.color + p.o + ")"; ctx.fill(); p.y -= p.s * 0.5; if (p.y < 0) p.y = c.height; });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
 </body>
 </html>
